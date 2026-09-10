@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shuumatsu no Valkyrie - Torneio do Ragnarok: Biologia vs Verminoses</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;700&family=Oswald:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #060408;
+            color: #e2e8f0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* CABEÇALHO */
+        header {
+            background: rgba(12, 9, 18, 0.98);
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #b91c1c;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #f59e0b;
+            text-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+        }
+
+        nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: #1c1917;
+            border: 1px solid #78350f;
+            color: #d6d3d1;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 800;
+            border-radius: 4px;
+            transition: all 0.3s;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #b91c1c;
+            border-color: #f59e0b;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(185, 28, 28, 0.8);
+        }
+
+        /* BANNERS LATERAIS */
+        .side-character {
+            position: fixed;
+            top: 70px;
+            width: 320px;
+            height: calc(100vh - 70px);
+            z-index: 10;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .side-character.left-side {
+            left: 0;
+            border-right: 3px solid #f59e0b;
+            box-shadow: 10px 0 30px rgba(245, 158, 11, 0.4);
+        }
+
+        .side-character.right-side {
+            right: 0;
+            border-left: 3px solid #6b21a8;
+            box-shadow: -10px 0 30px rgba(107, 33, 168, 0.4);
+        }
+
+        .side-character img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: contrast(1.1) brightness(0.95);
+        }
+
+        .side-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 10px 20px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, rgba(0,0,0,0) 100%);
+            text-align: center;
+            z-index: 20;
+        }
+
+        .side-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .left-side .side-title { color: #fbbf24; }
+        .right-side .side-title { color: #a855f7; }
+
+        .side-subtitle {
+            font-size: 12px;
+            font-weight: 700;
+            color: #d1d5db;
+        }
+
+        /* CONTEÚDO CENTRAL */
+        .container {
+            max-width: calc(100% - 680px);
+            margin: 100px auto 30px auto;
+            position: relative;
+            z-index: 30;
+            perspective: 1000px;
+        }
+
+        .tab-content { 
+            display: none; 
+        }
+
+        .tab-content.active { 
+            display: block; 
+            animation: pptSlideTransition 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes pptSlideTransition {
+            0% {
+                opacity: 0;
+                transform: translateX(80px) scale(0.95) rotateY(-8deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1) rotateY(0deg);
+            }
+        }
+
+        .carousel-container, .game-box, .contato-box {
+            position: relative;
+            background: rgba(18, 12, 26, 0.95);
+            border: 2px solid #b91c1c;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 0 35px rgba(0,0,0,0.9);
+        }
+
+        .slide { display: none; }
+        .slide.active {
+            display: block;
+            animation: fadeInPPT 0.4s ease-out;
+        }
+
+        @keyframes fadeInPPT {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .vs-header {
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 20px;
+            color: #ef4444;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #451a03;
+            padding-bottom: 10px;
+        }
+
+        .slide-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .tag {
+            background: #7f1d1d;
+            color: #fca5a5;
+            border: 1px solid #ef4444;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            font-family: 'Oswald', sans-serif;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .slide h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #fbbf24;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .subtitulo {
+            color: #ef4444;
+            font-style: italic;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .slide p { margin-bottom: 12px; font-size: 15px; }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #1c1917;
+            border: 2px solid #f59e0b;
+            color: #f59e0b;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 22px;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .arrow:hover { 
+            background: #b91c1c; 
+            color: #fff; 
+            box-shadow: 0 0 15px #b91c1c;
+        }
+        .prev { left: -24px; }
+        .next { right: -24px; }
+
+        /* JOGO DE PERGUNTAS */
+        .quiz-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0d0a12;
+            padding: 12px 20px;
+            border-radius: 6px;
+            border: 1px solid #78350f;
+            margin-bottom: 20px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            color: #f59e0b;
+        }
+
+        .card-pergunta {
+            background: #0d0a12;
+            padding: 22px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .card-pergunta h3 {
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        .botoes-jogo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-game {
+            background: #1c1917;
+            color: #e2e8f0;
+            border: 1px solid #78350f;
+            padding: 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .btn-game:hover { 
+            background: #b91c1c; 
+            color: #fff;
+            border-color: #f59e0b;
+        }
+
+        #resultado-jogo {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            display: none;
+        }
+
+        .btn-proxima {
+            margin: 15px auto 0 auto;
+            background: #f59e0b;
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            display: none;
+        }
+
+        .btn-proxima:hover {
+            background: #fbbf24;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.8);
+        }
+
+        /* CONTATO */
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        input, textarea {
+            background: #0d0a12;
+            border: 1px solid #78350f;
+            padding: 12px;
+            border-radius: 6px;
+            color: #f59e0b;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ef4444;
+        }
+
+        .btn-enviar {
+            background: #b91c1c;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+        }
+
+        .btn-enviar:hover {
+            background: #ef4444;
+            box-shadow: 0 0 15px #ef4444;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #78350f;
+            font-size: 12px;
+            font-family: 'Oswald', sans-serif;
+            position: relative;
+            z-index: 30;
+        }
+
+        @media (max-width: 1200px) {
+            .side-character { display: none; }
+            .container { max-width: 90%; margin-top: 90px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ SHUUMATSU NO VALKYRIE: BIO-RAGNAROK</div>
+        <nav>
+            <button class="nav-btn active" data-target="slides">⚔️ Rodadas</button>
+            <button class="nav-btn" data-target="jogos">🔥 Desafio</button>
+            <button class="nav-btn" data-target="contato">📜 Pacto</button>
+        </nav>
+    </header>
+
+    <!-- LADO ESQUERDO: HUMANIDADE -->
+    <aside class="side-character left-side">
+        <img id="img-left" src="img/tesla.jpg" alt="Personagem Humano">
+        <div class="side-overlay">
+            <div class="side-title" id="title-left">NIKOLA TESLA</div>
+            <div class="side-subtitle" id="sub-left">O Único Feiticeiro da Ciência</div>
+        </div>
+    </aside>
+
+    <!-- LADO DIREITO: DEUSES / PARASITAS -->
+    <aside class="side-character right-side">
+        <img id="img-right" src="img/belzebub.jpg" alt="Personagem Deus">
+        <div class="side-overlay">
+            <div class="side-title" id="title-right">BELZEBU</div>
+            <div class="side-subtitle" id="sub-right">O Senhor das Moscas</div>
+        </div>
+    </aside>
+
+    <main class="container">
+        
+        <!-- ABA SLIDES -->
+        <section id="aba-slides" class="tab-content active">
+            <div class="carousel-container">
+                <button class="arrow prev" id="btn-prev">&#10094;</button>
+                <button class="arrow next" id="btn-next">&#10095;</button>
+
+                <div class="slides">
+                    <div class="slide active">
+                        <div class="vs-header">1ª RODADA DO RAGNAROK • LAGOAS VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #01</span>
+                                <h2>Esquistossomose</h2>
+                                <p class="subtitulo">Alcunha: "O Flagelo da Barriga-d'água"</p>
+                                <p><strong>Inimigo (Causa):</strong> <em>Schistosoma mansoni</em></p>
+                                <p><strong>Ataque (Transmissão):</strong> Invasão por cercárias liberadas por caramujos em águas doces.</p>
+                                <p><strong>Dano / Sintomas:</strong> Inchaço grave do fígado e baço, dores abdominais intensas e diarreia.</p>
+                                <p><strong>Defesa Humana:</strong> Saneamento básico e controle do caramujo vetor.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <div class="vs-header">2ª RODADA DO RAGNAROK • CARNE CONTAMINADA VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #02</span>
+                                <h2>Teníase</h2>
+                                <p class="subtitulo">Alcunha: "A Solitária do Intestino"</p>
+                                <p><strong>Inimigo (Causa):</strong> <em>Taenia solium</em> (Porco) / <em>Taenia saginata</em> (Boi)</p>
+                                <p><strong>Ataque (Transmissão):</strong> Consumo de carne malcozida contendo cisticercos vivos.</p>
+                                <p><strong>Dano / Sintomas:</strong> Roubo contínuo de nutrientes, fome insaciável, dor de cabeça e fraqueza.</p>
+                                <p><strong>Defesa Humana:</strong> Cozimento adequado das carnes e inspeção sanitária.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <div class="vs-header">3ª RODADA DO RAGNAROK • INVASOR CEREBRAL VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #03</span>
+                                <h2>Cisticercose</h2>
+                                <p class="subtitulo">Alcunha: "O Invasor do Sistema Nervoso"</p>
+                                <p><strong>Inimigo (Causa):</strong> Desenvolvimento dos ovos da <em>Taenia solium</em> no organismo.</p>
+                                <p><strong>Ataque (Transmissão):</strong> Ingestão direta dos ovos do verme via água ou vegetais não lavados.</p>
+                                <p><strong>Dano / Sintomas:</strong> Formação de cistos nos músculos, olhos e cérebro (Neurocisticercose).</p>
+                                <p><strong>Defesa Humana:</strong> Higienização rigorosa de alimentos e consumo de água tratada.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <div class="vs-header">4ª RODADA DO RAGNAROK • INVASÃO SILENCIOSA VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #04</span>
+                                <h2>Ascaridíase</h2>
+                                <p class="subtitulo">Alcunha: "A Gigante Lombriga"</p>
+                                <p><strong>Inimigo (Causa):</strong> <em>Ascaris lumbricoides</em></p>
+                                <p><strong>Ataque (Transmissão):</strong> Ingestão acidental de ovos em água ou alimentos mal higienizados.</p>
+                                <p><strong>Dano / Sintomas:</strong> Dores abdominais, náuseas e risco fatal de obstrução intestinal.</p>
+                                <p><strong>Defesa Humana:</strong> Lavar as mãos antes das refeições e filtrar/ferver a água.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <div class="vs-header">5ª RODADA DO RAGNAROK • TERRA SANGRENTA VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #05</span>
+                                <h2>Ancilostomose</h2>
+                                <p class="subtitulo">Alcunha: "O Amarelão Sugador de Sangue"</p>
+                                <p><strong>Inimigo (Causa):</strong> <em>Ancylostoma duodenale</em> / <em>Necator americanus</em></p>
+                                <p><strong>Ataque (Transmissão):</strong> Larvas no solo perfuram ativamente a pele dos pés descalços.</p>
+                                <p><strong>Dano / Sintomas:</strong> Anemia profunda, cansaço extremo e palidez característica.</p>
+                                <p><strong>Defesa Humana:</strong> Uso constante de calçados e saneamento do solo.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slide">
+                        <div class="vs-header">6ª RODADA DO RAGNAROK • ATAQUE NOTURNO VS HUMANIDADE</div>
+                        <div class="slide-grid">
+                            <div class="slide-text">
+                                <span class="tag">Inimigo Parasita #06</span>
+                                <h2>Enterobíase</h2>
+                                <p class="subtitulo">Alcunha: "O Tormento Noturno (Oxiúro)"</p>
+                                <p><strong>Inimigo (Causa):</strong> <em>Enterobius vermicularis</em></p>
+                                <p><strong>Ataque (Transmissão):</strong> Ingestão/inalação de ovos presentes em objetos ou mãos contaminadas.</p>
+                                <p><strong>Dano / Sintomas:</strong> Coceira anal intensa no período noturno e distúrbios do sono.</p>
+                                <p><strong>Defesa Humana:</strong> Higiene das mãos, unhas cortadas e troca frequente de roupas de cama.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ABA JOGOS -->
+        <section id="aba-jogos" class="tab-content">
+            <div class="game-box">
+                <h2 style="color: #f59e0b; text-align: center; font-family: 'Cinzel', serif; font-size: 26px;">🔥 ARENA DE COMBATE DO RAGNAROK</h2>
+                <p style="text-align: center; margin-top: 5px; margin-bottom: 20px; font-size: 14px; color: #d1d5db;">Enfrente as 6 rodadas contra os parasitas mortais para salvar a humanidade!</p>
+
+                <div class="quiz-status">
+                    <span id="quiz-rodada">RODADA 1 DE 6</span>
+                    <span id="quiz-placar">PONTOS: 0</span>
+                </div>
+
+                <div class="card-pergunta">
+                    <h3 id="quiz-pergunta">Carregando pergunta...</h3>
+                </div>
+
+                <div class="botoes-jogo" id="quiz-opcoes"></div>
+
+                <div id="resultado-jogo"></div>
+                <button class="btn-proxima" id="btn-proxima" onclick="proximaPergunta()">Próxima Rodada ⚔️</button>
+            </div>
+        </section>
+
+        <!-- ABA CONTATO -->
+        <section id="aba-contato" class="tab-content">
+            <div class="contato-box">
+                <h2 style="color: #f59e0b; font-family: 'Cinzel', serif; font-size: 26px;">📜 PACTO COM AS VALQUÍRIAS</h2>
+                <p style="margin-bottom: 20px;">Envie uma mensagem aos desenvolvedores deste projeto para prestar seu apoio à Ciência!</p>
+
+                <form action="https://formspree.io/f/xqkvqrbp" method="POST">
+                    <input type="hidden" name="_to" value="danielribeiropereira1984@gmail.com">
+                    <div class="form-group">
+                        <label for="nome">Nome do Lutador / Estudante:</label>
+                        <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail de Contato:</label>
+                        <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mensagem">Mensagem para a Arena:</label>
+                        <textarea id="mensagem" name="mensagem" rows="4" placeholder="Escreva sua mensagem aqui..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-enviar">Invocar Envio de Mensagem ⚡</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>SHUUMATSU NO VALKYRIE • DESENVOLVIMENTO DE SISTEMAS & BIOLOGIA 2026</p>
+    </footer>
+
+    <script>
+        const personagensPorAba = {
+            slides: {
+                leftImg: 'img/tesla.jpg',
+                leftTitle: 'NIKOLA TESLA',
+                leftSub: 'O Único Feiticeiro da Ciência',
+                rightImg: 'img/belzebub.jpg',
+                rightTitle: 'BELZEBU',
+                rightSub: 'O Senhor das Moscas'
+            },
+            jogos: {
+                leftImg: 'img/adam.jpg',
+                leftTitle: 'ADÃO',
+                leftSub: 'Pai da Humanidade',
+                rightImg: 'img/zeus.jpg',
+                rightTitle: 'ZEUS',
+                rightSub: 'Rei do Olimpo'
+            },
+            contato: {
+                leftImg: 'img/qin.jpg',
+                leftTitle: 'QIN SHI HUANG',
+                leftSub: 'O Primeiro Imperador da China',
+                rightImg: 'img/hades.jpg',
+                rightTitle: 'HADES',
+                rightSub: 'Rei do Submundo'
+            }
+        };
+
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        const imgLeft = document.getElementById('img-left');
+        const titleLeft = document.getElementById('title-left');
+        const subLeft = document.getElementById('sub-left');
+
+        const imgRight = document.getElementById('img-right');
+        const titleRight = document.getElementById('title-right');
+        const subRight = document.getElementById('sub-right');
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.getAttribute('data-target');
+
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                tabContents.forEach(tab => tab.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(`aba-${targetTab}`).classList.add('active');
+
+                const p = personagensPorAba[targetTab];
+                if (p) {
+                    imgLeft.src = p.leftImg;
+                    titleLeft.innerText = p.leftTitle;
+                    subLeft.innerText = p.leftSub;
+
+                    imgRight.src = p.rightImg;
+                    titleRight.innerText = p.rightTitle;
+                    subRight.innerText = p.rightSub;
+                }
+            });
+        });
+
+        const slides = document.querySelectorAll('.slide');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+
+        btnNext.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        });
+
+        btnPrev.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            showSlide(currentSlide);
+        });
+
+        const perguntasQuiz = [
+            {
+                rodada: "1ª RODADA • ESQUISTOSSOMOSE",
+                pergunta: "Qual é a principal forma de infecção pela Esquistossomose ao entrar em águas doces contaminadas?",
+                opcoes: [
+                    { texto: "Ingestão de carne de porco contaminada", correta: false },
+                    { texto: "Penetração ativa de cercárias liberadas por caramujos na pele", correta: true },
+                    { texto: "Picada do mosquito Aedes aegypti", correta: false },
+                    { texto: "Inalação de ovos no ar", correta: false }
+                ],
+                explicacao: "As cercárias liberadas pelos caramujos biomfalárias nadam e perfuram a pele humana em lagoas contaminadas!"
+            },
+            {
+                rodada: "2ª RODADA • TENÍASE",
+                pergunta: "Como o guerreiro humano adquire a Teníase (Solitária) em seu organismo?",
+                opcoes: [
+                    { texto: "Comendo vegetais mal lavados com ovos", correta: false },
+                    { texto: "Consumindo carne de porco ou boi malcozida com cisticercos", correta: true },
+                    { texto: "Andando descalço no solo úmido", correta: false },
+                    { texto: "Bebendo água direto de poços", correta: false }
+                ],
+                explicacao: "A Teníase é adquirida ao comer carne malcozida contendo larvas encistadas (cisticercos)."
+            },
+            {
+                rodada: "3ª RODADA • CISTICERCOSE",
+                pergunta: "Diferente da Teníase, a grave Cisticercose humana ocorre quando o indivíduo:",
+                opcoes: [
+                    { texto: "Ingere diretamente os OVOS da Taenia solium em água/alimentos contaminados", correta: true },
+                    { texto: "Come carne de boi bem assada", correta: false },
+                    { texto: "É picado pelo barbeiro", correta: false },
+                    { texto: "Entra em contato com caramujos de lagoa", correta: false }
+                ],
+                explicacao: "A Cisticercose ocorre pela ingestão direta dos OVOS da Taenia. As larvas podem migrar para o cérebro!"
+            },
+            {
+                rodada: "4ª RODADA • ASCARIDÍASE",
+                pergunta: "Qual é a medida de defesa essencial para prevenir a Ascaridíase (Lombriga)?",
+                opcoes: [
+                    { texto: "Evitar consumo de carne de porco", correta: false },
+                    { texto: "Lavar as mãos, higienizar alimentos frescos e filtrar/ferver a água", correta: true },
+                    { texto: "Eliminar o caramujo das lagoas", correta: false },
+                    { texto: "Usar sapatos pesados de borracha", correta: false }
+                ],
+                explicacao: "A Ascaridíase é transmitida pela ingestão de ovos presentes em alimentos ou água não tratados."
+            },
+            {
+                rodada: "5ª RODADA • ANCILOSTOMOSE",
+                pergunta: "O Amarelão (Ancilostomose) causa anemia profunda. Qual estratégia o parasita usa para invadir?",
+                opcoes: [
+                    { texto: "Larvas no solo perfuram ativamente a pele dos pés descalços", correta: true },
+                    { texto: "Ovos infectam o leite bovino", correta: false },
+                    { texto: "Transmissão pela picada de pulgas", correta: false },
+                    { texto: "Entrada por inalação de poeira", correta: false }
+                ],
+                explicacao: "As larvas de Ancylostoma ficam no solo e perfuram a pele de quem anda descalço!"
+            },
+            {
+                rodada: "6ª RODADA • ENTEROBÍASE",
+                pergunta: "O sintoma marcante da Enterobíase (Oxiúro), que surge principalmente durante a noite, é:",
+                opcoes: [
+                    { texto: "Coceira anal intensa no período noturno", correta: true },
+                    { texto: "Febre alta e dores articulares", correta: false },
+                    { texto: "Perda da visão noturna", correta: false },
+                    { texto: "Manchas roxas nos pés", correta: false }
+                ],
+                explicacao: "A fêmea do Oxiúro põe ovos na região anal à noite, gerando coceira intensa."
+            }
+        ];
+
+        let perguntaAtualIndex = 0;
+        let pontuacao = 0;
+
+        function carregarPergunta() {
+            const q = perguntasQuiz[perguntaAtualIndex];
+            document.getElementById('quiz-rodada').innerText = q.rodada;
+            document.getElementById('quiz-placar').innerText = `PONTOS: ${pontuacao}`;
+            document.getElementById('quiz-pergunta').innerText = q.pergunta;
+
+            const conteinerOpcoes = document.getElementById('quiz-opcoes');
+            conteinerOpcoes.innerHTML = '';
+
+            const resBox = document.getElementById('resultado-jogo');
+            resBox.style.display = 'none';
+            document.getElementById('btn-proxima').style.display = 'none';
+
+            q.opcoes.forEach(opcao => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-game';
+                btn.innerText = opcao.texto;
+                btn.onclick = () => verificarResposta(opcao.correta, q.explicacao);
+                conteinerOpcoes.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(correta, explicacao) {
+            const resBox = document.getElementById('resultado-jogo');
+            const botoes = document.querySelectorAll('.btn-game');
+            
+            botoes.forEach(b => b.disabled = true);
+            resBox.style.display = 'block';
+
+            if (correta) {
+                pontuacao += 100;
+                resBox.style.background = 'rgba(16, 185, 129, 0.2)';
+                resBox.style.color = '#34d399';
+                resBox.style.border = '1px solid #10b981';
+                resBox.innerHTML = `⚡ <strong>VITÓRIA DA HUMANIDADE!</strong> (+100 pts)<br><small>${explicacao}</small>`;
+            } else {
+                resBox.style.background = 'rgba(239, 68, 68, 0.2)';
+                resBox.style.color = '#f87171';
+                resBox.style.border = '1px solid #ef4444';
+                resBox.innerHTML = `💥 <strong>O PARASITA SE DEFENDEU!</strong> Resposta incorreta.<br><small>${explicacao}</small>`;
+            }
+
+            document.getElementById('quiz-placar').innerText = `PONTOS: ${pontuacao}`;
+            document.getElementById('btn-proxima').style.display = 'block';
+        }
+
+        function proximaPergunta() {
+            perguntaAtualIndex++;
+            if (perguntaAtualIndex < perguntasQuiz.length) {
+                carregarPergunta();
+            } else {
+                exibirResultadoFinal();
+            }
+        }
+
+        function exibirResultadoFinal() {
+            document.getElementById('quiz-rodada').innerText = "TORNEIO FINALIZADO!";
+            document.getElementById('quiz-pergunta').innerText = `O Ragnarok da Biologia terminou! A Humanidade alcançou ${pontuacao} de 600 pontos possíveis!`;
+            
+            document.getElementById('quiz-opcoes').innerHTML = '';
+            document.getElementById('resultado-jogo').style.display = 'none';
+
+            const btnReiniciar = document.getElementById('btn-proxima');
+            btnReiniciar.innerText = "Reiniciar Desafio ⚔️";
+            btnReiniciar.style.display = 'block';
+            btnReiniciar.onclick = () => {
+                perguntaAtualIndex = 0;
+                pontuacao = 0;
+                carregarPergunta();
+            };
+        }
+
+        carregarPergunta();
+    </script>
+</body>
+</html>
