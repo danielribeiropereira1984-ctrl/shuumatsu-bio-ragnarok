@@ -401,6 +401,30 @@
             .side-character { display: none; }
             .container { max-width: 90%; margin-top: 90px; }
         }
+
+        /* CORREÇÃO PARA CELULARES */
+        @media (max-width: 900px) {
+            .side-character {
+                display: none !important;
+            }
+            .container {
+                max-width: 100% !important;
+                margin: 80px 15px 20px 15px !important;
+            }
+            header {
+                padding: 10px 15px;
+            }
+            .logo {
+                font-size: 14px;
+            }
+            .nav-btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .botoes-jogo {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
@@ -865,7 +889,6 @@
             `;
         }
 
-        // Função de envio de feedback integrada com o Google Sheets (com a nova URL e mode: 'no-cors')
         function enviarPacto(event) {
             event.preventDefault();
             
