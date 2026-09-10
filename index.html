@@ -546,7 +546,7 @@
                     <span id="quiz-placar">PONTOS: 0</span>
                 </div>
 
-                <div class="card-pergunta">
+                <div class="card-pergunta" id="card-pergunta-container">
                     <h3 id="quiz-pergunta">Carregando pergunta...</h3>
                 </div>
 
@@ -563,8 +563,7 @@
                 <h2 style="color: #f59e0b; font-family: 'Cinzel', serif; font-size: 26px;">📜 PACTO COM AS VALQUÍRIAS</h2>
                 <p style="margin-bottom: 20px;">Envie uma mensagem aos desenvolvedores deste projeto para prestar seu apoio à Ciência!</p>
 
-                <form action="https://formspree.io/f/xqkvqrbp" method="POST">
-                    <input type="hidden" name="_to" value="danielribeiropereira1984@gmail.com">
+                <form id="form-pacto" onsubmit="enviarPacto(event)">
                     <div class="form-group">
                         <label for="nome">Nome do Lutador / Estudante:</label>
                         <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
@@ -577,7 +576,8 @@
                         <label for="mensagem">Mensagem para a Arena:</label>
                         <textarea id="mensagem" name="mensagem" rows="4" placeholder="Escreva sua mensagem aqui..." required></textarea>
                     </div>
-                    <button type="submit" class="btn-enviar">Invocar Envio de Mensagem ⚡</button>
+                    <button type="submit" class="btn-enviar" id="btn-enviar-texto">Invocar Envio de Mensagem ⚡</button>
+                    <div id="status-envio" style="margin-top: 15px; text-align: center; font-weight: bold; display: none;"></div>
                 </form>
             </div>
         </section>
@@ -670,7 +670,7 @@
             showSlide(currentSlide);
         });
 
-        const perguntasQuiz = [
+        const perguntasQuizOriginal = [
             {
                 rodada: "1ª RODADA • ESQUISTOSSOMOSE",
                 pergunta: "Qual é a principal forma de infecção pela Esquistossomose ao entrar em águas doces contaminadas?",
@@ -739,14 +739,42 @@
             }
         ];
 
+        let perguntasQuiz = [];
         let perguntaAtualIndex = 0;
         let pontuacao = 0;
+
+        function embaralharArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function iniciarNovoJogo() {
+            let perguntasEmbaralhadas = embaralharArray(perguntasQuizOriginal);
+            perguntasQuiz = perguntasEmbaralhadas.map((item, index) => {
+                return {
+                    ...item,
+                    rodada: `${index + 1}ª RODADA • ` + item.rodada.split('• ')[1],
+                    opcoes: embaralharArray(item.opcoes)
+                };
+            });
+            perguntaAtualIndex = 0;
+            pontuacao = 0;
+            carregarPergunta();
+        }
 
         function carregarPergunta() {
             const q = perguntasQuiz[perguntaAtualIndex];
             document.getElementById('quiz-rodada').innerText = q.rodada;
             document.getElementById('quiz-placar').innerText = `PONTOS: ${pontuacao}`;
-            document.getElementById('quiz-pergunta').innerText = q.pergunta;
+            
+            const cardContainer = document.getElementById('card-pergunta-container');
+            cardContainer.style.borderLeft = "5px solid #f59e0b";
+            cardContainer.style.background = "#0d0a12";
+            cardContainer.innerHTML = `<h3 id="quiz-pergunta">${q.pergunta}</h3>`;
 
             const conteinerOpcoes = document.getElementById('quiz-opcoes');
             conteinerOpcoes.innerHTML = '';
@@ -798,23 +826,90 @@
         }
 
         function exibirResultadoFinal() {
-            document.getElementById('quiz-rodada').innerText = "TORNEIO FINALIZADO!";
-            document.getElementById('quiz-pergunta').innerText = `O Ragnarok da Biologia terminou! A Humanidade alcançou ${pontuacao} de 600 pontos possíveis!`;
-            
+            document.getElementById('quiz-rodada').innerText = "FIM DO RAGNAROK";
             document.getElementById('quiz-opcoes').innerHTML = '';
             document.getElementById('resultado-jogo').style.display = 'none';
+            document.getElementById('btn-proxima').style.display = 'none';
 
-            const btnReiniciar = document.getElementById('btn-proxima');
-            btnReiniciar.innerText = "Reiniciar Desafio ⚔️";
-            btnReiniciar.style.display = 'block';
-            btnReiniciar.onclick = () => {
-                perguntaAtualIndex = 0;
-                pontuacao = 0;
-                carregarPergunta();
-            };
+            const cardContainer = document.getElementById('card-pergunta-container');
+            
+            let mensagemFinal = "";
+            let corBorda = "";
+            let fundoBox = "";
+
+            if (pontuacao === 0) {
+                mensagemFinal = `🌑 <strong>O SILÊNCIO DOS CÉUS...</strong><br><br>Diante da fúria implacável e da grandiosidade insondável do poder divino, a humanidade não teve nenhuma chance. Uma demonstração absoluta de que os mortais jamais poderiam tocar os domínios dos deuses...`;
+                corBorda = "#7f1d1d";
+                fundoBox = "rgba(127, 29, 29, 0.25)";
+            } else if (pontuacao > 300) {
+                mensagemFinal = `🏆 <strong>A HUMANIDADE ALCANÇOU A SALVAÇÃO!</strong><br><br>Após o sacrifício e a queda de vários guerreiros na arena, a vitória finalmente foi selada com ${pontuacao} pontos. Cada gota de sangue derramada valeu a pena para garantir o futuro da terra!`;
+                corBorda = "#10b981";
+                fundoBox = "rgba(16, 185, 129, 0.2)";
+            } else if (pontuacao < 300) {
+                mensagemFinal = `💀 <strong>A HUMANIDADE FOI DERROTADA...</strong><br><br>Com ${pontuacao} pontos, os esforços dos combatentes não foram suficientes. Os parasitas dominaram a arena e a extinção se abateu sobre o mundo...`;
+                corBorda = "#ef4444";
+                fundoBox = "rgba(239, 68, 68, 0.2)";
+            } else {
+                mensagemFinal = `⚖️ <strong>UM EMPATE HISTÓRICO COM OS DEUSES!</strong><br><br>Exatos 300 pontos! A força da humanidade e o poder dos parasitas colidiram em equilíbrio absoluto. O destino da terra permanece suspenso no fio da navalha!`;
+                corBorda = "#f59e0b";
+                fundoBox = "rgba(245, 158, 11, 0.2)";
+            }
+
+            cardContainer.style.borderLeft = `5px solid ${corBorda}`;
+            cardContainer.style.background = fundoBox;
+            cardContainer.innerHTML = `
+                <h3 style="text-align: center; font-size: 18px; line-height: 1.7;">${mensagemFinal}</h3>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn-game" style="text-align: center; display: inline-block; width: auto; padding: 12px 25px;" onclick="iniciarNovoJogo()">Reiniciar Desafio 🔄</button>
+                </div>
+            `;
         }
 
-        carregarPergunta();
+        // Função de envio de feedback integrada com o Google Sheets (com a nova URL e mode: 'no-cors')
+        function enviarPacto(event) {
+            event.preventDefault();
+            
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const mensagem = document.getElementById('mensagem').value;
+            const statusDiv = document.getElementById('status-envio');
+            const botao = document.querySelector('.btn-enviar');
+            const form = document.getElementById('form-pacto');
+            
+            const urlScript = "https://script.google.com/macros/s/AKfycbwm_YBoP1O-ptvMPiMmtMDWYvTx7OrEsmvQcTcAmurOFEkedV4CR8g1ZaQoHhXFgYIw/exec"; 
+
+            botao.disabled = true;
+            botao.innerText = "Registrando na Arena...";
+            statusDiv.style.display = 'block';
+            statusDiv.style.color = '#f59e0b';
+            statusDiv.innerHTML = "⚡ Enviando feedback para os deuses...";
+
+            const dados = { nome: nome, email: email, mensagem: mensagem };
+
+            fetch(urlScript, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(() => {
+                statusDiv.style.color = '#34d399';
+                statusDiv.innerHTML = `⚡ Pacto realizado com sucesso, <strong>${nome}</strong>! Feedback salvo na planilha.`;
+                form.reset();
+                botao.disabled = false;
+                botao.innerText = "Invocar Envio de Mensagem ⚡";
+            })
+            .catch(error => {
+                statusDiv.style.color = '#ef4444';
+                statusDiv.innerHTML = "💥 Erro ao registrar o pacto. Tente novamente.";
+                botao.disabled = false;
+                botao.innerText = "Invocar Envio de Mensagem ⚡";
+            });
+        }
+
+        iniciarNovoJogo();
     </script>
 </body>
 </html>
